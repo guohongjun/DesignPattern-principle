@@ -1,5 +1,5 @@
 # DesignPattern-principle
-关于设计模式原则，有的按照solid原则总结，有的说六原则，大家都总结的都不一致。今天我这里把我知道给大家总结一下：
+关于设计模式原则，有的按照solid原则总结，有的说六原则，大家都总结的都不一致。学习了这位[仁兄](http://my.csdn.net/zhengzhb)的文章上的基础上，今天这里把我理解的设计模式几大原则给大家分享一下：
 >* 单一职责原则
 >* 开闭原则
 >* 接口分离原则
@@ -71,7 +71,49 @@ public class Client {
 定义：客户端不应该依赖它不需要的接口；一个类对另一个类的依赖应该建立在最小的接口上。 
 
 ### 里氏代换原则
-定义是：一个子类可以代替一个父类，完成其父类的功能。
+里氏代换原则是由麻省理工学院（MIT）计算机科学实验室的Liskov女士，在1987年的OOPSLA大会上发表的一篇文章《Data Abstraction and Hierarchy》里面提出来的，主要阐述了有关继承的一些原则，也就是什么时候应该使用继承，什么时候不应该使用继承，以及其中的蕴涵的原理。2002年，软件工程大师Robert C. Martin，出版了一本《Agile Software Development Principles Patterns and Practices》，在文中他把里氏代换原则最终简化为一句话："Subtypes must be substitutable for their base types"，也就是说，子类必须能够替换成它们的基类。
+
+>定义1：如果对每一个类型为 T1的对象 Object1，都有类型为 T2 的对象Object2，使得以 T1定义的所有程序 P 在所有的对象 Object1 都代换成 Object2 时，程序 P 的行为没有发生变化，那么类型 T2 是类型 T1 的子类型。
+
+>定义2：所有引用父类的地方必须能正常地使用其子类的对象。
+
+问题由来：有一功能P1，由类A完成。现需要将功能P1进行扩展，扩展后的功能为P，其中P由原有功能P1与新功能P2组成。新功能P由类A的子类B来完成，则子类B在完成新功能P2的同时，有可能会导致原有功能P1发生故障。
+
+解决方案：当使用继承时，遵循里氏替换原则。类B继承类A时，除添加新的方法完成新增功能P2外，尽量不要重写父类A的方法，也尽量不要重载父类A的方法。
+
+举例说明继承的风险，我们需要完成一个两数相减的功能，由类A来负责。
+不说没用营养的了，上代码：
+```java 
+public class Superclass {
+		public int subtraction(int a, int b) {
+			return a - b;
+		}
+	}
+
+	public class Subclass extends Superclass {
+		public int subtraction(int a, int b) {
+			return a - b - 1;
+		}
+	}
+
+	public class Client {
+		public static void main(String[] args) {
+			Subclass subclass = new Subclass();
+			SuperClass supuerClass = new SuperClass();
+			System.out.println("SuperClass +  "
+					+ SuperClass.subtraction(10 - 5));
+			System.out.println("subclass +  "+subclass.subtraction(10 - 5));
+		}
+
+	}
+```
+大家看一下上面的代码中子类可以代替父类，而不使原来的父类的计算功能不变吗？答案是否定的。
+里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。它包含以下4层含义：
+>*子类可以实现父类的抽象方法，但不能覆盖父类的非抽象方法。
+>*子类中可以增加自己特有的方法。
+>*当子类的方法重载父类的方法时，方法的前置条件（即方法的形参）要比父类方法的输入参数更宽松。
+>*当子类的方法实现父类的抽象方法时，方法的后置条件（即方法的返回值）要比父类更严格。
+
 
 ### 依赖倒置原则
 >定义：高层模块不应该依赖低层模块，二者都应该依赖其抽象；抽象不应该依赖细节；细节应该依赖抽象。编程应该依赖抽象，不应该依赖细节。
@@ -89,7 +131,7 @@ class Book {
 	}
 
 	class Mother {
-		public void narrate(Book book) {
+		public void read(Book book) {
 			System.out.println("妈妈开始讲故事");
 			System.out.println(book.getContent());
 		}
@@ -98,7 +140,7 @@ class Book {
 	public class Client {
 		public static void main(String[] args) {
 			Mother mother = new Mother();
-			mother.narrate(new Book());
+			mother.read(new Book());
 		}
 	}
 ```
@@ -140,7 +182,7 @@ Mother类与接口IReader发生依赖关系，而Book和Newspaper都属于读物
 	}
 
 	class Mother {
-		public void narrate(IReader reader) {
+		public void read(IReader reader) {
 			System.out.println("妈妈开始讲故事");
 			System.out.println(reader.getContent());
 		}
@@ -149,8 +191,8 @@ Mother类与接口IReader发生依赖关系，而Book和Newspaper都属于读物
 	public class Client {
 		public static void main(String[] args) {
 			Mother mother = new Mother();
-			mother.narrate(new Book());
-			mother.narrate(new Newspaper());
+			mother.read(new Book());
+			mother.read(new Newspaper());
 		}
 	}
 ```
@@ -166,11 +208,13 @@ Mother类与接口IReader发生依赖关系，而Book和Newspaper都属于读物
 >*低层模块尽量都要有抽象类或接口，或者两者都有。
 >*变量的声明类型尽量是抽象类或接口。
 >*使用继承时遵循里氏替换原则。
+
 依赖倒置原则的核心就是要我们面向接口编程，理解了面向接口编程，也就理解了依赖倒置。
 
 
 ### 迪米特原则
 定义：类之间应该减少耦合。
+
 
 ### 优先使用组合，而不是使用继承
 定义：这个就不用解释了吧，学习过面向对象编程的同学，都应该知道这个事。
