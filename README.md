@@ -72,8 +72,122 @@ public class Client {
 
 
 ### 接口分离原则
-定义：客户端不应该依赖它不需要的接口；一个类对另一个类的依赖应该建立在最小的接口上。 
+定义：客户端不应该依赖它不需要的接口；类间的依赖关系应该建立在最小的接口上.通俗的说就是：接口中的方法要尽量的少，不要使接口过于臃肿，不要有过多不相关的逻辑方法。参考于[李天炜](http://tianweili.github.io/blog/2015/02/10/interface-segregation-principle/)的文章
+```java 
+public interface I {
+    public void method1();
+    public void method2();
+    public void method3();
+}
+public class B implements I{
+ 
+    @Override
+    public void method1() {
+        System.out.println("类B实现了接口I的方法1");
+    }
+ 
+    @Override
+    public void method2() {
+        System.out.println("类B实现了接口I的方法2");
+    }
+ 
+    @Override
+    public void method3() {//类B并不需要接口I的方法3功能，但是由于实现接口I，所以不得不实现方法3
+        //在这里写一个空方法
+    }
+}
+public class D implements I{
+ 
+    @Override
+    public void method2() {
+        System.out.println("类D实现了接口I的方法2");
+    }
+ 
+    @Override
+    public void method3() {
+        System.out.println("类D实现了接口I的方法3");
+    }
+ 
+    @Override
+    public void method1() {//类D并不需要接口I的方法1功能，但是由于实现接口I，所以不得不实现方法1
+        //在这里写一个空方法
+    }
+}
+//类A通过接口I依赖类B
+public class A {
+    public void depend1(I i){
+        i.method1();
+    }
+}
+//类C通过接口I依赖类D
+public class C {
+    public void depend1(I i){
+        i.method3();
+    }
+}
+public class Client {
+    public static void main(String[] args) {
+        A a = new A();
+        I i1 = new B();
+        a.depend1(i1);
+         
+        C c = new C();
+        I i2 = new D();
+        c.depend1(i2);
+    }
+}
+```
+运行结果：
 
+类B实现了接口I的方法1
+类D实现了接口I的方法3
+从以上代码可以看出，如果接口过于臃肿，不同业务逻辑的抽象方法都放在一个接口内，则会造成它的实现类必须实现自己并不需要的方法，这种设计方式显然是不妥当的。所以我们要修改上述设计方法，把接口I拆分成3个接口，使得实现类只需要实现自己需要的接口即可。只贴出修改后的接口和实现类的代码，修改代码如下：
+```java 
+public interface I1 {
+    public void method1();
+}
+public interface I2 {
+    public void method2();
+}
+public interface I3 {
+    public void method3();
+}
+ 
+public class B implements I1,I2{
+    @Override
+    public void method1() {
+        System.out.println("类B实现了接口I的方法1");
+    }
+ 
+    @Override
+    public void method2() {
+        System.out.println("类B实现了接口I的方法2");
+    }
+}
+ 
+public class D implements I2,I3{
+    @Override
+    public void method2() {
+        System.out.println("类D实现了接口I的方法2");
+    }
+ 
+    @Override
+    public void method3() {
+        System.out.println("类D实现了接口I的方法3");
+    }
+}
+```
+与单一职责原则的区别
+
+到了这里，有些人可能觉得接口隔离原则与单一职责原则很相似，其实不然。
+
+>* 第一，单一职责原则注重的是职责；而接口隔离原则注重对接口依赖的隔离。
+
+>* 第二，单一职责原则主要是约束类，其次才是接口和方法，它针对的是程序中的实现和细节；而接口隔离原则主要约束接口，主要针对抽象，针对程序整体框架的构建。
+
+注意事项
+
+>原则是软件大师们经验的总结，在软件设计中具有一定的指导作用，但不能按部就班哈。对于接口隔离原则来说，接口尽量小，但是也要有限度。对接口进行细化可以提高程序设计灵活性是不争的事实，但是如果过小，则会造成接口数量过多，使设计复杂化，所以一定要适度。
 
 
 ### 里氏代换原则
