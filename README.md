@@ -74,6 +74,8 @@ public class Client {
 ### 接口分离原则
 定义：客户端不应该依赖它不需要的接口；一个类对另一个类的依赖应该建立在最小的接口上。 
 
+
+
 ### 里氏代换原则
 里氏代换原则是由麻省理工学院（MIT）计算机科学实验室的Liskov女士，在1987年的OOPSLA大会上发表的一篇文章《Data Abstraction and Hierarchy》里面提出来的，主要阐述了有关继承的一些原则，也就是什么时候应该使用继承，什么时候不应该使用继承，以及其中的蕴涵的原理。2002年，软件工程大师Robert C. Martin，出版了一本《Agile Software Development Principles Patterns and Practices》，在文中他把里氏代换原则最终简化为一句话："Subtypes must be substitutable for their base types"，也就是说，子类必须能够替换成它们的基类。
 
@@ -221,8 +223,120 @@ Mother类与接口IReader发生依赖关系，而Book和Newspaper都属于读物
 强调的前提：在类的结构设计上，每一个类都应当尽量降低成员的访问权限，也就是说，一个类包装好自己的private状态，不需要让别的类知道的字段或行为就不要公开。
 
 根本思想是：强调类之间的松耦合，类之间的耦合越弱，越有利于复用，一个处在弱耦合的类被修改，不会对有关系的类造成波及。
+```java
+public class A {
+		public B getB(String str) {
+			return new B(str);
+		}
 
+		public void work() {
+			B b = getB("李同学");
+			C c = b.getC("谢霆锋");
+			c.work();
+		}
+	}
 
+	public class B {
+		public String name;
+
+		public B() {
+
+		}
+
+		public B(String name) {
+			this.name = name;
+		}
+
+		public C getC(String name) {
+			return new C(name);
+		}
+	}
+
+	public class C {
+
+		public String name;
+
+		public C(String name) {
+			this.name = name;
+		}
+
+		public void work() {
+			System.out.println(name + "帮我把这件事做好了");
+		}
+	}
+public class Client {
+  public static void main(String[] args) {
+      A a = new A("王同学");
+      a.work();
+  }
+}
+```
+运行结果是：
+
+谢霆锋帮我把这件事做好了。
+
+运行结果正常，但是我们发现一个问题，A类与B类有关联，而A类与C类没有什么关联。C类出现在A类中是不是有点不合时宜呢？
+看到这里很多人都会明白，这种场景在实际开发中是非常常见的一种情况。对象A需要调用对象B的方法，对象B有需要调用对象C的方法……就是常见的getXXX().getXXX().getXXX()……类似于这种代码。如果你发现你的代码中也有这样的代码，那就考虑下是不是违反迪米特法则，是不是要重构一下了。
+
+修改一下该例子：
+```java 
+
+public class A {
+    pubic A(){
+    
+    }
+	public B getB(String str) {
+		return new B(str);
+	}
+
+	public void work() {
+		B b = getB("王同学");
+		b.work();
+	}
+}
+
+public class B {
+	public String name;
+
+	public B() {
+
+	}
+	public B(String name) {
+		this.name = name;
+	}
+    public void work(){
+        C c= getC(“谢霆锋”);
+        c.work;
+    }
+	public C getC(String name) {
+		return new C(name);
+	}
+}
+
+public class C {
+	public String name;
+	public C(String name) {
+		this.name = name;
+	}
+	public void work() {
+			System.out.println(name + "帮我把这件事做好了");
+		}
+	}
+public class Client {
+  public static void main(String[] args) {
+      A a = new A("王同学");
+      a.work();
+  }
+}
+```
+运行结果如下：
+
+谢霆锋帮我把这件事做好了
+
+>上面代码只是修改了下类A和B的work方法，使之符合了迪米特法则：
+
+>* 类A只与最直接的朋友类B通信，不与类C通信；
+>* 类A只调用类B提供的方法即可，不用关心类B内部是如何实现的（至于B是怎么调用的C，这些A都不用关心）。
 
 ### 优先使用组合，而不是使用继承
 定义：这个就不用解释了吧，学习过面向对象编程的同学，都应该知道这个事。
