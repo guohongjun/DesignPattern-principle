@@ -1,5 +1,5 @@
 # DesignPattern-principle
-关于设计模式原则，有的按照solid原则总结，有的说六原则，大家都总结的都不一致。学习了这位[仁兄](http://my.csdn.net/zhengzhb)的文章基础上，今天这里把我理解的设计模式几大原则给大家分享一下：
+关于设计模式的原则，有的按照solid原则总结，有的说solid+迪米特原则的六原则，大家都总结的都不一致。学习了这位[zhengzhb仁兄](http://my.csdn.net/zhengzhb)的文章基础上，今天这里把我理解的设计模式几大原则给大家分享一下：
 >* 单一职责原则
 >* 开闭原则
 >* 接口分离原则
@@ -69,7 +69,7 @@ public class Client {
 >* 一种可变性不应当散落在代码的很多角落里，而应当被封装到一个对象里面。继承应当被看做是封装变化的方法，而不应当被认为是从一般的对象生成特殊的对象方法。
 >* 一种可变性不应当与另一种可变性混合在一起。所有的类图的继承结构一般不会超过两层，不然就意味着将两种不同的可变性混合在一起。
 
-此处我借鉴了[花郎V](http://www.cnblogs.com/loulijun/archive/2012/03/14/2394055.html)这个仁兄的文章，很感谢哈。
+此处我借鉴了[花郎V](http://www.cnblogs.com/loulijun/archive/2012/03/14/2394055.html)这个仁兄的文章，很感谢他的文章，给我了很多启发。
 ```java
 public interface IBoy {
 		// 年龄
@@ -82,7 +82,6 @@ public interface IBoy {
 		public String getFace();
 
 	}
-
 
 	public class StrongerBoy implements IBoy {
 		private String name;
@@ -120,10 +119,8 @@ public interface IBoy {
 		}
 
 		public static void main(String args[]) {
-			System.out.println("----------美女在这里----------");
 			for (IBoy boy : boys) {
-				System.out.println("姓名:" + boy.getName() + " 年龄:"
-						+ boy.getAge() + "  长相:" + boy.getFace());
+				System.out.println("姓名:" + boy.getName() + " 年龄:"	+ boy.getAge() + "  长相:" + boy.getFace());
 			}
 		}
 	}
@@ -521,7 +518,7 @@ public class A {
 	}
 
 	public void work() {
-		B b = getB("王同学");
+		B b = getB("李同学");
 		b.work();
 	}
 }
