@@ -68,6 +68,120 @@ public class Client {
 
 >* 一种可变性不应当散落在代码的很多角落里，而应当被封装到一个对象里面。继承应当被看做是封装变化的方法，而不应当被认为是从一般的对象生成特殊的对象方法。
 >* 一种可变性不应当与另一种可变性混合在一起。所有的类图的继承结构一般不会超过两层，不然就意味着将两种不同的可变性混合在一起。
+此处我借鉴了[花郎V](http://www.cnblogs.com/loulijun/archive/2012/03/14/2394055.html)这个仁兄的文章，很感谢哈。
+```java
+public interface IBoy {
+		// 年龄
+		public int getAge();
+
+		// 姓名
+		public String getName();
+
+		// 长相
+		public String getFace();
+
+	}
+
+
+	public class StrongerBoy implements IBoy {
+		private String name;
+		private int age;
+		private String face;
+
+		public StrongerBoy(String name, int age, String face, String figure) {
+			this.name = name;
+			this.age = age;
+			this.face = face;
+		}
+
+		@Override
+		public int getAge() {
+			return age;
+		}
+
+		@Override
+		public String getFace() {
+			return face;
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+	}
+
+	public class Mans {
+		private final static ArrayList<IBoy> boys = new ArrayList<IBoy>();
+		// 静态初始化块
+		static {
+			boy.add(new StrongerBoy("谢霆锋", 30, "帅气"));
+			boy.add(new StrongerBoy("冯小刚", 60, "成熟"));
+		}
+
+		public static void main(String args[]) {
+			System.out.println("----------美女在这里----------");
+			for (IBoy boy : boys) {
+				System.out.println("姓名:" + boy.getName() + " 年龄:"
+						+ boy.getAge() + "  长相:" + boy.getFace());
+			}
+		}
+	}
+}
+
+```
+这个程序写的不错哈，我运行了一下，感觉不错。此时问题来了，如果要加个外国名人怎么办？修改Iboy这个接口吗，这样做就符合不了开闭原则了。所以，我这里想到了扩展，但是如何扩展呢？
+可以定义一个IForeigner接口继承自IBoy，在IForeigner接口中添加国籍属性getCountry()，然后实现这个接口即可，然后就只需要在场景类中做稍微修改就可以了。
+
+```java 
+
+	public interface IForeigner extends IBoy {
+		// 国籍
+		public String getCountry();
+	}
+	
+	public class ForeignerBoy implements IForeigner {  
+	    private String name;  
+	    private int age;  
+	    private String country;  
+	    private String face;  
+	    private String figure;  
+	       
+	    public ForeignerBoy(String name, int age, String country, String face, String figure)  
+	    {  
+	        this.name = name;  
+	        this.age = age;  
+	        this.country = country;  
+	        this.face =face;  
+	        this.figure = figure;  
+	    }  
+	    @Override 
+	    public String getCountry() {  
+	        // TODO Auto-generated method stub  
+	        return country;  
+	    }  
+	   
+	    @Override 
+	    public int getAge() {  
+	        // TODO Auto-generated method stub  
+	        return age;  
+	    }  
+	   
+	    @Override 
+	    public String getFace() {  
+	        // TODO Auto-generated method stub  
+	        return face;  
+	    }  
+	   
+	    @Override 
+	    public String getName() {  
+	        // TODO Auto-generated method stub  
+	        return name;  
+	    }  
+	   
+	} 
+	boys.add(new ForeignerBoy("richale",28,"美国","阳光")); 
+```
+设计原则是死的，也要根据实际的需求，我们要灵活使用这个开闭原则。
 
 
 ### 接口分离原则
