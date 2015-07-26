@@ -1,5 +1,5 @@
 # DesignPattern-principle
-关于设计模式的原则，有的按照solid原则总结，有的说solid+迪米特原则的六原则，大家都总结的都不一致。学习了这位[zhengzhb仁兄](http://my.csdn.net/zhengzhb)的文章基础上，今天这里把我理解的设计模式几大原则给大家分享一下：
+关于设计模式的原则，有的按照solid原则总结，有的说solid+迪米特原则的六原则，大家都总结的都不一致。仔细阅读和研究了[zhengzhb](http://my.csdn.net/zhengzhb)等仁兄的文章基础上，今天这里把我理解的设计模式几大原则给大家分享一下：
 >* 单一职责原则
 >* 开闭原则
 >* 接口分离原则
