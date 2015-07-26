@@ -81,7 +81,7 @@ public class Client {
 - 一种可变性不应当散落在代码的很多角落里，而应当被封装到一个对象里面。继承应当被看做是封装变化的方法，而不应当被认为是从一般的对象生成特殊的对象方法。
 - 一种可变性不应当与另一种可变性混合在一起。所有的类图的继承结构一般不会超过两层，不然就意味着将两种不同的可变性混合在一起。
 
-此处我借鉴了[花郎V](http://www.cnblogs.com/loulijun/archive/2012/03/14/2394055.html)这个仁兄的文章，很感谢哈。
+此处我借鉴了[花郎V](http://www.cnblogs.com/loulijun/archive/2012/03/14/2394055.html)这个仁兄的文章，很感谢!
 
 ```java
 public interface IBoy {
@@ -346,7 +346,7 @@ public class D implements I2,I3{
 
 解决方案：当使用继承时，遵循里氏替换原则。类Subclass继承类Superclass时，除添加新的方法完成新增功能P2外，尽量不要重写父类Superclass的方法，也尽量不要重载父类Superclass的方法。
 
-不说没用营养的了，上代码：
+不说没有营养的了，上代码：
 
 ``` java
 public class Superclass {
